@@ -29,7 +29,7 @@ class Train(object):
         weight_file = os.path.join(self.output_dir, cfg.WEIGHTS_FILE)    #The path of the weight's file
 
         self.variable_to_restore = tf.global_variables()  # The variable to be restored
-        self.saver = tf.train.Saver(self.variable_to_restore[:-4])  # restore variable
+        self.saver = tf.train.Saver(self.variable_to_restore)  # restore variable
         self.summary_op = tf.summary.merge_all()  # define the operation of summary
         self.writer = tf.summary.FileWriter(self.output_dir)  # output the summary
 
@@ -51,7 +51,7 @@ class Train(object):
         print('Restore weights from:', weight_file)
         self.saver.restore(self.sess, weight_file)
         self.writer.add_graph(self.sess.graph)
-        self.saver = tf.train.Saver(self.variable_to_restore)
+        #self.saver = tf.train.Saver(self.variable_to_restore)
 
     def train(self):
         labels_train = self.data.load_labels('train')    #load the train labels
