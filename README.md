@@ -13,7 +13,7 @@ This implementation of [YOLO](https://arxiv.org/pdf/1506.02640.pdf) with TensorF
 
    if you download other dataset, you also need to modify file paths.
 
-3. Download weights file [yolo_weights](https://drive.google.com/file/d/0B-yiAeTLLamRekxqVE01Yi1RRlk/view?usp=sharing) for COCO, and put weight file into `data/output`.
+3. Download weights file [yolo_weights](https://pan.baidu.com/s/1A4a2pIEGG_ERBwTN3F-jcw) for COCO, and put weight file into `data/output`.
 
    Or you can also download my training weights file [YOLO_v2](https://pan.baidu.com/s/1Xf-YEAHj2PJ35ImDR-Tthw) for VOC.
 
