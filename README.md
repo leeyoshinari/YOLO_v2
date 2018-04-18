@@ -15,7 +15,7 @@ This implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with Tens
 
 3. Download weights file [yolo_weights](https://pan.baidu.com/s/1A4a2pIEGG_ERBwTN3F-jcw) for COCO, and put weight file into `data/output`.
 
-   Or you can also download my training weights file [YOLO_v2](https://pan.baidu.com/s/1Xf-YEAHj2PJ35ImDR-Tthw) for VOC.
+   Or you can also download my training weights file [YOLO_v2](https://pan.baidu.com/s/1dolc21xoXT8HABKr7MFcwQ) for VOC.
 
 4. Modify configuration into `yolo/config.py`.
 
