@@ -5,7 +5,7 @@ This implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with Tens
 ## Installation
 1. Clone YOLO_tiny repository
 	```Shell
-	$ git clone https://github.com/leeyoshinari/YOLO_tiny.git
+	$ git clone https://github.com/leeyoshinari/YOLO_v2.git
     $ cd YOLO_v2
 	```
 
