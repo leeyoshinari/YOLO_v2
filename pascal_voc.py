@@ -72,11 +72,9 @@ class Pascal_voc(object):
             cy = 1.0 * boxes[1] * self.cell_size / self.image_size
             boxes[0] = cx - np.floor(cx)
             boxes[1] = cy - np.floor(cy)
-            #boxes += [int(np.floor(cy) * self.cell_size + np.floor(cx))]
             xind = int(np.floor(cx))
             yind = int(np.floor(cy))
-            #if label[boxes[4],: , 0] == 1:
-            #    continue
+            
             label[yind, xind, :, 0] = [1] * self.box_per_cell
             label[yind, xind, :, 1:5] = [boxes[:4]] * self.box_per_cell
             label[yind, xind, :, 5 + class_ind] = 1
