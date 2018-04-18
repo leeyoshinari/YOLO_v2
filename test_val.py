@@ -171,7 +171,7 @@ class Detector(object):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', default = 'yolo_v2.ckpt-3500', type = str)    #the name of the weights to be restored
+    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)    #the name of the weights to be restored
     parser.add_argument('--weight_dir', default = 'output', type = str)
     parser.add_argument('--data_dir', default = 'data', type = str)
     parser.add_argument('--gpu', default = '', type = str)    #which gpu to be selected
