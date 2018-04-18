@@ -137,13 +137,7 @@ class yolo_v2(object):
         boxes = tf.reshape(label[:, :, :, :, 1:5], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, 4])
         classes = tf.reshape(label[:, :, :, :, 5:], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class])
 
-        '''boxes1 = tf.stack([boxes[:, :, :, 0] * self.cell_size - offset,
-                           boxes[:, :, :, 1] * self.cell_size - tf.transpose(offset, (0, 2, 1, 3)),
-                           tf.sqrt(tf.exp(boxes[:, :, :, 2]) * np.reshape(self.anchor[:5], [1, 1, 5]) / self.cell_size),
-                           tf.sqrt(tf.exp(boxes[:, :, :, 3]) * np.reshape(self.anchor[5:], [1, 1, 5]) / self.cell_size)])'''
-
         iou = self.calc_iou(box_coor_trans, boxes)
-        #iou = tf.reshape()
         best_box = tf.to_float(tf.equal(iou, tf.reduce_max(iou, [2], True)))
         confs = tf.expand_dims(best_box * response, axis = 4)
 
@@ -160,14 +154,6 @@ class yolo_v2(object):
         loss = 0.5 * tf.reduce_mean(tf.reduce_mean(loss, axis = 1))
 
         return loss
-
-
-    def get_boxes(self, boxes):
-        boxes1 = tf.stack([1.0 / (1.0 + tf.exp(-1.0 * boxes[:, :, :, 0])),
-                          1.0 / (1.0 + tf.exp(-1.0 * boxes[:, :, :, 1])),
-                          tf.sqrt(tf.exp(boxes[:, :, :, 2]) * np.reshape(self.anchor[:5], [1, 1, 5]) / self.cell_size),
-                          tf.sqrt(tf.exp(boxes[:, :, :, 3]) * np.reshape(self.anchor[5:], [1, 1, 5]) / self.cell_size)])
-        return tf.transpose(boxes1, (1, 2, 3, 0))
 
 
     def calc_iou(self, boxes1, boxes2):
