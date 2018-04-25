@@ -96,19 +96,18 @@ class Data_preprocess(object):
 
 
     def next_batches_test(self, label):
-        imagename = []
         images = np.zeros([self.batch_size, self.image_size, self.image_size, 3])
         labels = np.zeros([self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, 5 + self.num_classes])
         num = 0
         while num < self.batch_size:
-            imagename.append(label[self.count_t]['imagename'])
-            images[num, :, :, :] = self.image_read(imagename[num])
+            imagename = label[self.count_t]['imagename']
+            images[num, :, :, :] = self.image_read(imagename)
             labels[num, :, :, :, :] = label[self.count_t]['labels']
             num += 1
             self.count_t += 1
             if self.count_t >= len(label):
                 self.count_t = 0
-        return imagename, images, labels
+        return images, labels
 
 
     def image_read(self, imagename):
