@@ -70,7 +70,7 @@ class Train(object):
                     sum_loss = 0
 
                     for i in range(num):
-                        _, images_t, labels_t = self.data.next_batches_test(labels_test)
+                        images_t, labels_t = self.data.next_batches_test(labels_test)
                         feed_dict_t = {self.yolo.images: images_t, self.yolo.labels: labels_t}
                         loss_t = self.sess.run(self.yolo.total_loss, feed_dict=feed_dict_t)
                         sum_loss += loss_t
