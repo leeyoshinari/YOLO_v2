@@ -138,7 +138,7 @@ class yolo_v2(object):
         classes = tf.reshape(label[:, :, :, :, 5:], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class])
 
         iou = self.calc_iou(box_coor_trans, boxes)
-        best_box = tf.to_float(tf.equal(iou, tf.reduce_max(iou, [2], True)))
+        best_box = tf.to_float(tf.equal(iou, tf.reduce_max(iou, axis = 3, True)))
         confs = tf.expand_dims(best_box * response, axis = 4)
 
         conid = self.noobject_scale * (1.0 - confs) + self.object_scale * confs
