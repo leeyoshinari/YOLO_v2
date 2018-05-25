@@ -23,7 +23,7 @@ class Detector(object):
         self.cell_size = cfg.CELL_SIZE
         self.batch_size = cfg.BATCH_SIZE
         self.box_per_cell = cfg.BOX_PRE_CELL
-        self.threshold = cfg.THRESHOLD    #the probability of the class
+        self.threshold = cfg.THRESHOLD
         self.anchor = cfg.ANCHOR
 
         self.sess = tf.Session()
@@ -57,7 +57,7 @@ class Detector(object):
     def calc_output(self, output):
         output = np.reshape(output, [self.cell_size, self.cell_size, self.box_per_cell, 5 + self.num_classes])
         boxes = np.reshape(output[:, :, :, :4], [self.cell_size, self.cell_size, self.box_per_cell, 4])    #boxes coordinate
-        boxes = self.get_boxes(boxes) * self.image_size  # restore the boxes coordinates to the image_size
+        boxes = self.get_boxes(boxes) * self.image_size
 
         confidence = np.reshape(output[:, :, :, 4], [self.cell_size, self.cell_size, self.box_per_cell])    #the confidence of the each anchor boxes
         confidence = 1.0 / (1.0 + np.exp(-1.0 * confidence))
@@ -66,29 +66,27 @@ class Detector(object):
         classes = np.reshape(output[:, :, :, 5:], [self.cell_size, self.cell_size, self.box_per_cell, self.num_classes])    #classes
         classes = np.exp(classes) / np.tile(np.expand_dims(np.sum(np.exp(classes), axis=3), axis=3), (1, 1, 1, self.num_classes))
 
-        probs = classes * confidence #The probability of classes in each anchor boxes
+        probs = classes * confidence
 
-        filter_probs = np.array(probs >= self.threshold, dtype = 'bool')    #If > threshold, the corresponding position is set to 'True', or 'False'
-        filter_index = np.nonzero(filter_probs)    #return the index with a value of 'True'
-        box_filter = boxes[filter_index[0], filter_index[1], filter_index[2]]    #return the corresponding position of the boxes coordinates
-        probs_filter = probs[filter_probs]    #return the corresponding position of the probability of the classes
-        classes_num = np.argmax(filter_probs, axis = 3)[filter_index[0], filter_index[1], filter_index[2]]    #return the index of the classes
+        filter_probs = np.array(probs >= self.threshold, dtype = 'bool')
+        filter_index = np.nonzero(filter_probs)
+        box_filter = boxes[filter_index[0], filter_index[1], filter_index[2]]
+        probs_filter = probs[filter_probs]
+        classes_num = np.argmax(filter_probs, axis = 3)[filter_index[0], filter_index[1], filter_index[2]]
 
-        sort_num = np.array(np.argsort(probs_filter))[::-1]    #descending sort
-        box_filter = box_filter[sort_num]   #sort
-        probs_filter = probs_filter[sort_num]    #sort
-        classes_num = classes_num[sort_num]    #sort
+        sort_num = np.array(np.argsort(probs_filter))[::-1]
+        box_filter = box_filter[sort_num]
+        probs_filter = probs_filter[sort_num]
+        classes_num = classes_num[sort_num]
 
-        '''Since there maybe some different cells to predict the same objects, the cells with a lower confidence will be deleted.
-           By judging the iou to delete the cells with a lower confidence. This is NMS(non maximum suppression)'''
         for i in range(len(probs_filter)):
             if probs_filter[i] == 0:
                 continue
             for j in range(i+1, len(probs_filter)):
                 if self.calc_iou(box_filter[i], box_filter[j]) > 0.5:
-                    probs_filter[j] = 0.0    #set the probability to 0
+                    probs_filter[j] = 0.0
 
-        filter_probs = np.array(probs_filter > 0, dtype = 'bool')    #If > 0, the corresponding position is set to 'True', or 'False'
+        filter_probs = np.array(probs_filter > 0, dtype = 'bool')
         probs_filter = probs_filter[filter_probs]
         box_filter = box_filter[filter_probs]
         classes_num = classes_num[filter_probs]
