@@ -25,7 +25,7 @@ class yolo_v2(object):
         self.noobject_scale = 1.0
         self.coordinate_scale = 1.0
 
-        self.images = tf.placeholder(tf.float32, [None, self.image_size, self.image_size, 3], name='images')  # feed the images
+        self.images = tf.placeholder(tf.float32, [None, self.image_size, self.image_size, 3], name='images')
         self.logits = self.build_networks(self.images)
 
         if isTraining:
@@ -124,7 +124,6 @@ class yolo_v2(object):
         box_confidence = tf.reshape(predict[:, :, :, :, 4], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, 1])
         box_classes = tf.reshape(predict[:, :, :, :, 5:], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class])
 
-        #box_coordinate = self.get_boxes(box_coordinate)
         boxes1 = tf.stack([(1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 0])) + offset) / self.cell_size,
                            (1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 1])) + tf.transpose(offset, (0, 2, 1, 3))) / self.cell_size,
                            tf.sqrt(tf.exp(box_coordinate[:, :, :, :, 2]) * np.reshape(self.anchor[:5], [1, 1, 1, 5]) / self.cell_size),
