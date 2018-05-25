@@ -27,11 +27,11 @@ class Pascal_voc(object):
 
     def load_labels(self, model):
         if model == 'train':
-            self.devkil_path = os.path.join(self.pascal_voc, 'VOCdevkit')  # 文件路径
+            self.devkil_path = os.path.join(self.pascal_voc, 'VOCdevkit')
             self.data_path = os.path.join(self.devkil_path, 'VOC2007')
             txtname = os.path.join(self.data_path, 'ImageSets', 'Main', 'trainval.txt')
         if model == 'test':
-            self.devkil_path = os.path.join(self.pascal_voc, 'VOCdevkit-test')  # 文件路径
+            self.devkil_path = os.path.join(self.pascal_voc, 'VOCdevkit-test')
             self.data_path = os.path.join(self.devkil_path, 'VOC2007')
             txtname = os.path.join(self.data_path, 'ImageSets', 'Main', 'test.txt')
 
