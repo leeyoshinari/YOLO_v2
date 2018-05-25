@@ -21,47 +21,44 @@ class Train(object):
         self.yolo = yolo
         self.data = data
         self.num_class = len(cfg.CLASSES)
-        self.max_step = cfg.MAX_ITER    #The max step
-        self.saver_iter = cfg.SAVER_ITER    #Every 'saver_iter' step save a weights
-        self.summary_iter = cfg.SUMMARY_ITER    #Every 'summary_iter' step output a summary
-        self.initial_learn_rate = cfg.LEARN_RATE   #The learn_rate of training
-        self.output_dir = os.path.join(cfg.DATA_DIR, 'output')    #The path of the output files
-        weight_file = os.path.join(self.output_dir, cfg.WEIGHTS_FILE)    #The path of the weight's file
+        self.max_step = cfg.MAX_ITER
+        self.saver_iter = cfg.SAVER_ITER
+        self.summary_iter = cfg.SUMMARY_ITER
+        self.initial_learn_rate = cfg.LEARN_RATE
+        self.output_dir = os.path.join(cfg.DATA_DIR, 'output')
+        weight_file = os.path.join(self.output_dir, cfg.WEIGHTS_FILE)
 
-        self.variable_to_restore = tf.global_variables()  # The variable to be restored
-        self.saver = tf.train.Saver(self.variable_to_restore)  # restore variable
-        self.summary_op = tf.summary.merge_all()  # define the operation of summary
-        self.writer = tf.summary.FileWriter(self.output_dir)  # output the summary
+        self.variable_to_restore = tf.global_variables()
+        self.saver = tf.train.Saver(self.variable_to_restore)
+        self.summary_op = tf.summary.merge_all()
+        self.writer = tf.summary.FileWriter(self.output_dir)
 
         self.global_step = tf.get_variable('global_step', [], initializer=tf.constant_initializer(0), trainable=False)
 
         self.learn_rate = tf.train.exponential_decay(self.initial_learn_rate, self.global_step, 30000, 0.1, name='learn_rate')
-        #self.learn_rate = tf.train.exponential_decay(self.initial_learn_rate, self.global_step, 600, 10, name='learn_rate')
-        self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learn_rate).minimize(self.yolo.total_loss, global_step=self.global_step)  # The function of the optimizer
-        #self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learn_rate).minimize(self.yolo.total_loss, global_step=self.global_step)
+        self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learn_rate).minimize(self.yolo.total_loss, global_step=self.global_step)
 
         self.average_op = tf.train.ExponentialMovingAverage(0.999).apply(tf.trainable_variables())
         with tf.control_dependencies([self.optimizer]):
             self.train_op = tf.group(self.average_op)
 
-        config = tf.ConfigProto(gpu_options=tf.GPUOptions())  # configure the GPU
+        config = tf.ConfigProto(gpu_options=tf.GPUOptions())
         self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
 
         print('Restore weights from:', weight_file)
         self.saver.restore(self.sess, weight_file)
         self.writer.add_graph(self.sess.graph)
-        #self.saver = tf.train.Saver(self.variable_to_restore)
 
     def train(self):
-        labels_train = self.data.load_labels('train')    #load the train labels
-        labels_test = self.data.load_labels('test')      #load the test labels
+        labels_train = self.data.load_labels('train')
+        labels_test = self.data.load_labels('test')
 
         num = 5
         initial_time = time.time()  # initialize the train time
 
         for step in xrange(0, self.max_step + 1):
-            images, labels = self.data.next_batches(labels_train)    #read data according to the batch size
+            images, labels = self.data.next_batches(labels_train)
             feed_dict = {self.yolo.images: images, self.yolo.labels: labels}
 
             if step % self.summary_iter == 0:
@@ -94,7 +91,7 @@ class Train(object):
                 self.sess.run(self.train_op, feed_dict = feed_dict)
 
             if step % self.saver_iter == 0:
-                self.saver.save(self.sess, self.output_dir + '/yolo_v2.ckpt', global_step = step)    #save the weights
+                self.saver.save(self.sess, self.output_dir + '/yolo_v2.ckpt', global_step = step)
 
     def remain(self, i, start):
         '''Calculate the remaining time of the training'''
@@ -107,8 +104,8 @@ class Train(object):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)    #the name of the weights to be restored
-    parser.add_argument('--gpu', default = '', type = str)    #which gpu to be selected
+    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)
+    parser.add_argument('--gpu', default = '', type = str)
     args = parser.parse_args()
 
     if args.gpu is not None:
@@ -117,8 +114,7 @@ def main():
     if args.weights is not None:
         cfg.WEIGHTS_FILE = args.weights
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU    #configure gpu
-
+    os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU
     yolo = yolo_v2()
     pre_data = Pascal_voc()
 
