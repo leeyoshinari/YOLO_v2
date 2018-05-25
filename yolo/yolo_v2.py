@@ -138,7 +138,7 @@ class yolo_v2(object):
         classes = tf.reshape(label[:, :, :, :, 5:], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class])
 
         iou = self.calc_iou(box_coor_trans, boxes)
-        best_box = tf.to_float(tf.equal(iou, tf.reduce_max(iou, axis = 3, True)))
+        best_box = tf.to_float(tf.equal(iou, tf.reduce_max(iou, axis=-1, keep_dims=True)))
         confs = tf.expand_dims(best_box * response, axis = 4)
 
         conid = self.noobject_scale * (1.0 - confs) + self.object_scale * confs
@@ -150,8 +150,7 @@ class yolo_v2(object):
         pro_loss = proid * tf.square(box_classes - classes)
 
         loss = tf.concat([coo_loss, con_loss, pro_loss], axis = 4)
-        loss = tf.reshape(loss, [self.batch_size, self.cell_size * self.cell_size * self.box_per_cell * (self.num_class + 5)])
-        loss = 0.5 * tf.reduce_mean(tf.reduce_mean(loss, axis = 1))
+        loss = tf.reduce_mean(tf.reduce_sum(loss, axis = [1, 2, 3, 4]), name = 'loss')
 
         return loss
 
