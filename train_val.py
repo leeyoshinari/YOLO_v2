@@ -2,8 +2,7 @@
 #
 # Written by leeyoshinari
 #
-# 2018-04-18
-
+#------------------------------------------------------------------------------------
 import tensorflow as tf
 import numpy as np
 import argparse
@@ -34,8 +33,9 @@ class Train(object):
         self.writer = tf.summary.FileWriter(self.output_dir)
 
         self.global_step = tf.get_variable('global_step', [], initializer=tf.constant_initializer(0), trainable=False)
-
-        self.learn_rate = tf.train.exponential_decay(self.initial_learn_rate, self.global_step, 30000, 0.1, name='learn_rate')
+        self.learn_rate = tf.train.exponential_decay(self.initial_learn_rate, self.global_step, 20000, 0.1, name='learn_rate')
+        # self.global_step = tf.Variable(0, trainable = False)
+        # self.learn_rate = tf.train.piecewise_constant(self.global_step, [100, 190, 10000, 15500], [1e-3, 5e-3, 1e-2, 1e-3, 1e-4])
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learn_rate).minimize(self.yolo.total_loss, global_step=self.global_step)
 
         self.average_op = tf.train.ExponentialMovingAverage(0.999).apply(tf.trainable_variables())
