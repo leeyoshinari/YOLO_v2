@@ -2,8 +2,7 @@
 #
 # Written by leeyoshinari
 #
-# 2018-04-18
-
+#------------------------------------------------------------------------------------
 import tensorflow as tf
 import numpy as np
 import argparse
