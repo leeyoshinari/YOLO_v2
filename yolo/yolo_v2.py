@@ -2,8 +2,7 @@
 #
 # Written by leeyoshinari
 #
-# 2018-04-18
-
+#------------------------------------------------------------------------------------
 import tensorflow as tf
 import numpy as np
 import yolo.config as cfg
@@ -24,6 +23,11 @@ class yolo_v2(object):
         self.object_scale = 5.0
         self.noobject_scale = 1.0
         self.coordinate_scale = 1.0
+        
+        self.offset = np.transpose(np.reshape(np.array([np.arange(self.cell_size)] * self.cell_size * self.box_per_cell),
+                                         [self.box_per_cell, self.cell_size, self.cell_size]), (1, 2, 0))
+        self.offset = tf.reshape(tf.constant(self.offset, dtype=tf.float32), [1, self.cell_size, self.cell_size, self.box_per_cell])
+        self.offset = tf.tile(self.offset, (self.batch_size, 1, 1, 1))
 
         self.images = tf.placeholder(tf.float32, [None, self.image_size, self.image_size, 3], name='images')
         self.logits = self.build_networks(self.images)
@@ -114,18 +118,13 @@ class yolo_v2(object):
 
 
     def loss_layer(self, predict, label):
-        offset = np.transpose(np.reshape(np.array([np.arange(self.cell_size)] * self.cell_size * self.box_per_cell),
-                                         [self.box_per_cell, self.cell_size, self.cell_size]), (1, 2, 0))
-        offset = tf.reshape(tf.constant(offset, dtype=tf.float32), [1, self.cell_size, self.cell_size, self.box_per_cell])
-        offset = tf.tile(offset, (self.batch_size, 1, 1, 1))
-
         predict = tf.reshape(predict, [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class + 5])
         box_coordinate = tf.reshape(predict[:, :, :, :, :4], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, 4])
         box_confidence = tf.reshape(predict[:, :, :, :, 4], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, 1])
         box_classes = tf.reshape(predict[:, :, :, :, 5:], [self.batch_size, self.cell_size, self.cell_size, self.box_per_cell, self.num_class])
 
-        boxes1 = tf.stack([(1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 0])) + offset) / self.cell_size,
-                           (1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 1])) + tf.transpose(offset, (0, 2, 1, 3))) / self.cell_size,
+        boxes1 = tf.stack([(1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 0])) + self.offset) / self.cell_size,
+                           (1.0 / (1.0 + tf.exp(-1.0 * box_coordinate[:, :, :, :, 1])) + tf.transpose(self.offset, (0, 2, 1, 3))) / self.cell_size,
                            tf.sqrt(tf.exp(box_coordinate[:, :, :, :, 2]) * np.reshape(self.anchor[:5], [1, 1, 1, 5]) / self.cell_size),
                            tf.sqrt(tf.exp(box_coordinate[:, :, :, :, 3]) * np.reshape(self.anchor[5:], [1, 1, 1, 5]) / self.cell_size)])
         box_coor_trans = tf.transpose(boxes1, (1, 2, 3, 4, 0))
@@ -141,8 +140,8 @@ class yolo_v2(object):
         confs = tf.expand_dims(best_box * response, axis = 4)
 
         conid = self.noobject_scale * (1.0 - confs) + self.object_scale * confs
-        cooid = self.coordinate_scale * tf.concat(4 * [confs], 4)
-        proid = self.class_scale * tf.concat(self.num_class * [confs], 4)
+        cooid = self.coordinate_scale * confs
+        proid = self.class_scale * confs
 
         coo_loss = cooid * tf.square(box_coor_trans - boxes)
         con_loss = conid * tf.square(box_confidence - confs)
@@ -155,7 +154,7 @@ class yolo_v2(object):
 
 
     def calc_iou(self, boxes1, boxes2):
-        boxx = tf.square(boxes1[:, :, :, :, 2:4]) * self.cell_size
+        boxx = tf.square(boxes1[:, :, :, :, 2:4])
         boxes1_square = boxx[:, :, :, :, 0] * boxx[:, :, :, :, 1]
         box = tf.stack([boxes1[:, :, :, :, 0] - boxx[:, :, :, :, 0] * 0.5,
                         boxes1[:, :, :, :, 1] - boxx[:, :, :, :, 1] * 0.5,
@@ -163,7 +162,7 @@ class yolo_v2(object):
                         boxes1[:, :, :, :, 1] + boxx[:, :, :, :, 1] * 0.5])
         boxes1 = tf.transpose(box, (1, 2, 3, 4, 0))
 
-        boxx = tf.square(boxes2[:, :, :, :, 2:4]) * self.cell_size
+        boxx = tf.square(boxes2[:, :, :, :, 2:4])
         boxes2_square = boxx[:, :, :, :, 0] * boxx[:, :, :, :, 1]
         box = tf.stack([boxes2[:, :, :, :, 0] - boxx[:, :, :, :, 0] * 0.5,
                         boxes2[:, :, :, :, 1] - boxx[:, :, :, :, 1] * 0.5,
