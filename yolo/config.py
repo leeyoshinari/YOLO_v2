@@ -16,14 +16,14 @@ GPU = ''
 
 IMAGE_SIZE = 416    #The size of the input images
 
-LEARN_RATE = 0.00005   #The learn_rate of training
-MAX_ITER = 50000    #The max step
+LEARN_RATE = 0.0001   #The learn_rate of training
+MAX_ITER = 20000    #The max step
 SUMMARY_ITER = 5    #Every 'summary_iter' step output a summary
 SAVER_ITER = 50    #Every 'saver_iter' step save a weights
 
 BOX_PRE_CELL = 5    #The number of BoundingBoxs predicted by each grid
 CELL_SIZE = 13      #The size of the last layer  #(batch_size, 13, 13, ?)
-BATCH_SIZE = 30     #The batch size of each training
+BATCH_SIZE = 32     #The batch size of each training
 ALPHA = 0.1
 
 THRESHOLD = 0.3    #The threshold of the probability of the classes
