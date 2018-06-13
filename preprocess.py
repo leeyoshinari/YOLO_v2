@@ -2,8 +2,7 @@
 #
 # Written by leeyoshinari
 #
-# 2018-04-18
-
+#------------------------------------------------------------------------------------
 import os
 import cv2
 import numpy as np
@@ -63,16 +62,14 @@ class Data_preprocess(object):
             x2 = max(min((float(box.find('xmax').text)) * w_ratio, self.image_size), 0)
             y2 = max(min((float(box.find('ymax').text)) * h_ratio, self.image_size), 0)
             class_ind = self.class_to_ind[obj.find('name').text.lower().strip()]
-            boxes = [0.5 * (x1 + x2), 0.5 * (y1 + y2), np.sqrt((x2 - x1) / self.image_size), np.sqrt((y2 - y1) / self.image_size)]
-            cx = 1.0 * boxes[0] * self.cell_size / self.image_size
-            cy = 1.0 * boxes[1] * self.cell_size / self.image_size
-            boxes[0] = cx - np.floor(cx)
-            boxes[1] = cy - np.floor(cy)
+            boxes = [0.5 * (x1 + x2) / self.image_size, 0.5 * (y1 + y2) / self.image_size, np.sqrt((x2 - x1) / self.image_size), np.sqrt((y2 - y1) / self.image_size)]
+            cx = 1.0 * boxes[0] * self.cell_size
+            cy = 1.0 * boxes[1] * self.cell_size
             xind = int(np.floor(cx))
             yind = int(np.floor(cy))
             
-            label[yind, xind, :, 0] = [1] * self.box_per_cell
-            label[yind, xind, :, 1:5] = [boxes[:4]] * self.box_per_cell
+            label[yind, xind, :, 0] = 1
+            label[yind, xind, :, 1:5] = boxes[:4]
             label[yind, xind, :, 5 + class_ind] = 1
 
         return label, len(objects)
