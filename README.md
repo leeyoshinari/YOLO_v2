@@ -32,7 +32,7 @@ This is implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with T
 ## Darknet-19
 Darknet-19 has 19 convolutional layers, it's faster than yolo_v2. If you use darknet-19, you need some modifications. It's easy to modify.
 
-Please download Darknet-19 weights file for VOC from [darknet-19](https://drive.google.com/open?id=1XWWecDpekQ1t2DjhizF-virWyQCTSUeF).
+ Please download Darknet-19 weights file for VOC from [darknet-19](https://drive.google.com/open?id=1XWWecDpekQ1t2DjhizF-virWyQCTSUeF).
 
 ## Training on Your Own Dataset
 To train the model on your own dataset, you should need to modify:
