@@ -12,6 +12,7 @@ import os
 
 import yolo.config as cfg
 from yolo.yolo_v2 import yolo_v2
+# from yolo.darknet19 import Darknet19
 
 class Detector(object):
     def __init__(self, yolo, weights_file):
@@ -43,7 +44,6 @@ class Detector(object):
 
         results = self.calc_output(output)
 
-        #restore the x, y, w, h to its original size
         for i in range(len(results)):
             results[i][1] *= (1.0 * image_w / self.image_size)
             results[i][2] *= (1.0 * image_h / self.image_size)
@@ -168,15 +168,16 @@ class Detector(object):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)    #the name of the weights to be restored
+    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)    # darknet-19.ckpt
     parser.add_argument('--weight_dir', default = 'output', type = str)
     parser.add_argument('--data_dir', default = 'data', type = str)
-    parser.add_argument('--gpu', default = '', type = str)    #which gpu to be selected
+    parser.add_argument('--gpu', default = '', type = str)    # which gpu to be selected
     args = parser.parse_args()
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu    #configure gpu
+    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu    # configure gpu
     weights_file = os.path.join(args.data_dir, args.weight_dir, args.weights)
-    yolo = yolo_v2(False)    #'False' mean 'test'
+    yolo = yolo_v2(False)    # 'False' mean 'test'
+    # yolo = Darknet19(False)
 
     detector = Detector(yolo, weights_file)
 

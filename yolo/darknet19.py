@@ -7,7 +7,7 @@ import tensorflow as tf
 import numpy as np
 import yolo.config as cfg
 
-class yolo_v2(object):
+class Darknet19(object):
     def __init__(self, isTraining = True):
         self.classes = cfg.CLASSES
         self.num_class = len(self.classes)
@@ -67,16 +67,7 @@ class yolo_v2(object):
         net = self.conv_layer(net, [1, 1, 1024, 512], name = '21_conv')
         net = self.conv_layer(net, [3, 3, 512, 1024], name = '22_conv')
 
-        net = self.conv_layer(net, [3, 3, 1024, 1024], name = '23_conv')
-        net24 = self.conv_layer(net, [3, 3, 1024, 1024], name = '24_conv')
-
-        net = self.conv_layer(net16, [1, 1, 512, 64], name = '26_conv')
-        net = self.reorg(net)
-
-        net = tf.concat([net, net24], 3)
-
-        net = self.conv_layer(net, [3, 3, int(net.get_shape()[3]), 1024], name = '29_conv')
-        net = self.conv_layer(net, [1, 1, 1024, self.box_per_cell * (self.num_class + 5)], batch_norm=False, name = '30_conv')
+        net = self.conv_layer(net, [1, 1, 1024, self.box_per_cell * (self.num_class + 5)], batch_norm=False, name = '23_conv')
 
         return net
 

@@ -14,6 +14,7 @@ import yolo.config as cfg
 from pascal_voc import Pascal_voc
 from six.moves import xrange
 from yolo.yolo_v2 import yolo_v2
+# from yolo.darknet19 import Darknet19
 
 class Train(object):
     def __init__(self, yolo, data):
@@ -55,7 +56,7 @@ class Train(object):
         labels_test = self.data.load_labels('test')
 
         num = 5
-        initial_time = time.time()  # initialize the train time
+        initial_time = time.time()
 
         for step in xrange(0, self.max_step + 1):
             images, labels = self.data.next_batches(labels_train)
@@ -104,8 +105,8 @@ class Train(object):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)
-    parser.add_argument('--gpu', default = '', type = str)
+    parser.add_argument('--weights', default = 'yolo_v2.ckpt', type = str)  # darknet-19.ckpt
+    parser.add_argument('--gpu', default = '', type = str)  # which gpu to be selected
     args = parser.parse_args()
 
     if args.gpu is not None:
@@ -116,6 +117,7 @@ def main():
 
     os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU
     yolo = yolo_v2()
+    # yolo = Darknet19()
     pre_data = Pascal_voc()
 
     train = Train(yolo, pre_data)
