@@ -2,7 +2,7 @@
 #
 # Written by leeyoshinari
 #
-#------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
 import tensorflow as tf
 import numpy as np
 import yolo.config as cfg
@@ -97,15 +97,6 @@ class Darknet19(object):
     def pooling_layer(self, inputs, name = '1_pool'):
         pool = tf.nn.max_pool(inputs, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
         return pool
-
-
-    def reorg(self, inputs):
-        outputs_1 = inputs[:, ::2, ::2, :]
-        outputs_2 = inputs[:, ::2, 1::2, :]
-        outputs_3 = inputs[:, 1::2, ::2, :]
-        outputs_4 = inputs[:, 1::2, 1::2, :]
-        output = tf.concat([outputs_1, outputs_2, outputs_3, outputs_4], axis = 3)
-        return output
 
 
     def loss_layer(self, predict, label):
