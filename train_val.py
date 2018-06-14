@@ -2,7 +2,7 @@
 #
 # Written by leeyoshinari
 #
-#------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
 import tensorflow as tf
 import numpy as np
 import argparse
@@ -95,7 +95,6 @@ class Train(object):
                 self.saver.save(self.sess, self.output_dir + '/yolo_v2.ckpt', global_step = step)
 
     def remain(self, i, start):
-        '''Calculate the remaining time of the training'''
         if i == 0:
             remain_time = 0
         else:
