@@ -45,16 +45,16 @@ class Data_preprocess(object):
 
 
     def load_data(self, index):
-        imagename = os.path.join(self.data_path, 'Images', index + '.jpg')
-        image = cv2.imread(imagename)
-        h_ratio = 1.0 * self.image_size / image.shape[0]
-        w_ratio = 1.0 * self.image_size / image.shape[1]
-
         label = np.zeros([self.cell_size, self.cell_size, self.box_per_cell, 5 + self.num_classes])
-        filename = os.path.join(self.data_path, 'Labels', index + '.xml')
+        filename = os.path.join(self.data_path, 'Annotations', index + '.xml')
         tree = ET.parse(filename)
-        objects = tree.findall('object')
+        image_size = tree.find('size')
+        image_width = float(image_size.find('width').text)
+        image_height = float(image_size.find('height').text)
+        h_ratio = 1.0 * self.image_size / image_height
+        w_ratio = 1.0 * self.image_size / image_width
 
+        objects = tree.findall('object')
         for obj in objects:
             box = obj.find('bndbox')
             x1 = max(min((float(box.find('xmin').text)) * w_ratio, self.image_size), 0)
