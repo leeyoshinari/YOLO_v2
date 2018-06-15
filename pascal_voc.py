@@ -73,7 +73,7 @@ class Pascal_voc(object):
             yind = int(np.floor(cy))
             
             label[yind, xind, :, 0] = 1
-            label[yind, xind, :, 1:5] = boxes[:4]
+            label[yind, xind, :, 1:5] = boxes
             label[yind, xind, :, 5 + class_ind] = 1
 
         return label, len(objects)
