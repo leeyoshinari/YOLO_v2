@@ -3,7 +3,7 @@
 This is implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with TensorFlow.
 
 ## Installation
-1. Clone YOLO_tiny repository
+1. Clone YOLO_v2 repository
 	```Shell
 	$ git clone https://github.com/leeyoshinari/YOLO_v2.git
     $ cd YOLO_v2
@@ -11,7 +11,7 @@ This is implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with T
 
 2. Download Pascal VOC2007 dataset, and put the dataset into `data/Pascal_voc`.
 
-   if you download other dataset, you also need to modify file paths.
+   If you download other dataset, you also need to modify file paths.
 
 3. Download weights file [yolo_weights](https://drive.google.com/drive/folders/13TWYuNY-XcX9EyoU87dH9XsBKuWcPHHw?usp=sharing) for COCO, and put weight file into `data/output`.
 
@@ -37,11 +37,11 @@ Darknet-19 has 19 convolutional layers, it's faster than yolo_v2. If you use dar
 ## Training on Your Own Dataset
 To train the model on your own dataset, you should need to modify:
 
-1. Put all the images into the `Images` folder, put all the labels into the `Labels` folder. Select a part of the image for training, write this part of the image filename into `train.txt`, the remaining part of the image filename written in `test.txt`. Then put the `Images`, `Labels`, `train.txt` and `test.txt` into `data/dataset`. Put weight file in `data/output`.
+1. Put all the images into the `Images` folder, put all the labels into the `Labels` folder. Select a part of the image for training, write this part of the image filenames into `train.txt`, the remaining part of the image filenames written in `test.txt`. Then put the `Images`, `Labels`, `train.txt` and `test.txt` into `data/dataset`. Put weight file in `data/output`.
 
-2. `config.py` modify the CLASSES.
+2. `config.py:` modify the CLASSES.
 
-3. `train.py` replace`from pascal_voc import Pascal_voc` with `from preprocess import Data_preprocess`, and replace `pre_data = Pascal_voc()` with `pre_data = Data_preprocess()`.
+3. `train.py:` replace`from pascal_voc import Pascal_voc` with `from preprocess import Data_preprocess`, and replace `pre_data = Pascal_voc()` with `pre_data = Data_preprocess()`.
 
 ## Requirements
 1. Tensorflow
