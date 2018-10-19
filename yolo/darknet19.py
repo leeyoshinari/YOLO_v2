@@ -1,8 +1,8 @@
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#
-# Written by leeyoshinari
-#
+# Author:leeyoshinari
 #-----------------------------------------------------------------------------------
+
 import tensorflow as tf
 import numpy as np
 import yolo.config as cfg
