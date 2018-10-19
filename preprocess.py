@@ -1,7 +1,6 @@
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#
-# Written by leeyoshinari
-#
+# Author:leeyoshinari
 #------------------------------------------------------------------------------------
 import os
 import cv2
