@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
+# Author:leeyoshinari
 
 DATA_DIR = 'data'
 DATA_SET = 'data_set'
