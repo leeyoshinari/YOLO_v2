@@ -3,7 +3,7 @@
 This is implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with TensorFlow.
 
 ## Demo
-![Demo](https://github.com/leeyoshinari/YOLO_v2/blob/master/test/yolov2.mp4)
+![](https://github.com/leeyoshinari/YOLO_v2/blob/master/test/yolo%20v2%20demo.gif)
 
 ## Installation
 1. Clone YOLO_v2 repository
