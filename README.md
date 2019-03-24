@@ -31,6 +31,7 @@ This is implementation of [YOLO v2](https://arxiv.org/pdf/1612.08242.pdf) with T
 	```Shell
 	$ python test_val.py
 	```
+7. For more information to [wiki](https://github.com/leeyoshinari/YOLO_v2/wiki/YOLO_v2). 
 
 ## Darknet-19
 Darknet-19 has 19 convolutional layers, it's faster than yolo_v2. If you use darknet-19, you need some modifications. It's easy to modify.
